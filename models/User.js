@@ -22,7 +22,7 @@ const User = sequelize.define(
 				isEmail: true,
 			}
 		},
-		password: {
+		passwordHash: {
 			type: DataTypes.STRING,
 			unique: true,
 			allowNull: false,
@@ -53,3 +53,5 @@ const User = sequelize.define(
 		modelName: 'users'
 	}
 )
+
+module.exports = User;
