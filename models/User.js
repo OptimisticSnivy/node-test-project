@@ -22,9 +22,8 @@ const User = sequelize.define(
 				isEmail: true,
 			}
 		},
-		passwordHash: {
+		password: {
 			type: DataTypes.STRING,
-			unique: true,
 			allowNull: false,
 		},
 		city: {
