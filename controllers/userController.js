@@ -49,11 +49,11 @@ userController.getAllUsers = async (req, res) => {
 	try {
 		const users = await User.findAll();
 
-		jwt.verify(req.token, 'privateKey', (err, token) => {
+		jwt.verify(req.token, 'privateKey', (err, users) => {
 			if (err) {
 				res.status(403).json({
 					success: false,
-					error: 'Forbidden Access'
+					error: err
 				});
 			} else {
 				res.status(200).json({
@@ -83,11 +83,11 @@ userController.getUserById = async (req, res) => {
 			});
 		}
 
-		jwt.verify(req.token, 'privateKey', (err, token) => {
+		jwt.verify(req.token, 'privateKey', (err, user) => {
 			if (err) {
 				res.status(403).json({
 					success: false,
-					error: 'Forbidden Access'
+					error: err
 				});
 			}
 			else {
@@ -96,12 +96,46 @@ userController.getUserById = async (req, res) => {
 					data: user
 				});
 			}
-
 		})
-		res.status(200).json({
-			success: true,
-			data: user
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			error: error.message
 		});
+	}
+}
+
+userController.getUserProfile = async (req, res) => {
+	try {
+		const user = await User.findOne({ where: { username: body.username } })
+
+		if (!user) {
+			return res.status(404).json({
+				success: false,
+				data: 'User not found!'
+			});
+		}
+
+		const userProfile = {
+			username: user.username,
+			phone_number: user.username,
+		}
+
+		jwt.verify(req.token, 'privateKey', (err, token) => {
+			if (err) {
+				res.status(403).json({
+					success: false,
+					error: 'Forbidden Access'
+				});
+			} else {
+				res.status(200).json({
+					success: true,
+					data: user
+				});
+			}
+		})
+
+
 	} catch (error) {
 		res.status(500).json({
 			success: false,
