@@ -1,8 +1,11 @@
-const User = require('../models/User')
 const bcrypt = require('bcrypt')
+const { Op } = require('sequelize');
+const User = require('../models/User')
+
+const userController = {};
 
 // Create a user
-exports.createUser = async (req, res) => {
+userController.createUser = async (req, res) => {
 	try {
 		const saltRounds = 10
 
@@ -20,25 +23,39 @@ exports.createUser = async (req, res) => {
 		const salt = await bcrypt.genSalt(saltRounds)
 		const passwordHash = await bcrypt.hash(password, salt)
 
-		const user = await User.create({
-			username,
-			email,
-			password: passwordHash,
-			city,
-			state,
-			country,
-			country_code,
-			phone_number
-		});
+		const recordExists = await User.findOne({
+			where: {
+				[Op.or]: [
+					{ username: username },
+					{ email: email },
+					{ phone_number: phone_number }
+				]
+			}
+		})
 
-		res.status(201).json({ success: true, data: user });
+		if (recordExists === null) {
+			const user = await User.create({
+				username,
+				email,
+				password: passwordHash,
+				city,
+				state,
+				country,
+				country_code,
+				phone_number
+			});
+
+			res.status(201).json({ success: true, data: user });
+		} else {
+			res.status(400).json({ success: false, error: 'Username/Email-ID/Phone-Number already Exists!' });
+		}
 	}
 	catch (error) {
 		res.status(400).json({ success: false, error: error.message });
 	}
 }
 
-exports.getAllUsers = async (req, res) => {
+userController.getAllUsers = async (req, res) => {
 	try {
 		const users = await User.findAll();
 		res.status(200).json({
@@ -55,7 +72,7 @@ exports.getAllUsers = async (req, res) => {
 	}
 }
 
-exports.getUserById = async (req, res) => {
+userController.getUserById = async (req, res) => {
 	try {
 		const user = await User.findByPk(req.params.id);
 		if (!user) {
@@ -76,7 +93,7 @@ exports.getUserById = async (req, res) => {
 	}
 }
 
-exports.updateUser = async (req, res) => {
+userController.updateUser = async (req, res) => {
 	try {
 		const user = await User.findByPk(req.params.id);
 		if (!user) {
@@ -98,12 +115,9 @@ exports.updateUser = async (req, res) => {
 
 		await user.update({
 			username: username || user.name,
-			email: email || user.email,
 			city: city || user.city,
 			state: state || user.state,
 			country: country || user.country,
-			country_code: country_code || user.country_code,
-			phone_number: phone_number || user.phone_number,
 		})
 
 		res.status(200).json({
@@ -119,7 +133,7 @@ exports.updateUser = async (req, res) => {
 	}
 }
 
-exports.deleteUser = async (req, res) => {
+userController.deleteUser = async (req, res) => {
 	try {
 		const user = await User.findByPk(req.params.id);
 		if (!user) {
@@ -142,3 +156,5 @@ exports.deleteUser = async (req, res) => {
 		});
 	}
 }
+
+module.exports = userController;
