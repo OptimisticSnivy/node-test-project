@@ -1,17 +1,17 @@
+const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 const User = require('../models/User')
 
 const userController = {};
 
-// Create a user
 userController.createUser = async (req, res) => {
 	try {
 		const body = req.body;
 
 		const saltRounds = 10
 		const salt = await bcrypt.genSalt(saltRounds)
-		const passwordHash = await bcrypt.hash(password, salt)
+		const passwordHash = await bcrypt.hash(body.password, salt)
 
 		const recordExists = await User.findOne({
 			where: {
@@ -48,11 +48,21 @@ userController.createUser = async (req, res) => {
 userController.getAllUsers = async (req, res) => {
 	try {
 		const users = await User.findAll();
-		res.status(200).json({
-			success: true,
-			count: users.length,
-			data: users
-		});
+
+		jwt.verify(req.token, 'privateKey', (err, token) => {
+			if (err) {
+				res.status(403).json({
+					success: false,
+					error: 'Forbidden Access'
+				});
+			} else {
+				res.status(200).json({
+					success: true,
+					count: users.length,
+					data: users
+				});
+			}
+		})
 	}
 	catch (error) {
 		res.status(500).json({
@@ -65,12 +75,29 @@ userController.getAllUsers = async (req, res) => {
 userController.getUserById = async (req, res) => {
 	try {
 		const user = await User.findByPk(req.params.id);
+
 		if (!user) {
 			return res.status(404).json({
 				success: false,
 				data: 'User not found!'
 			});
 		}
+
+		jwt.verify(req.token, 'privateKey', (err, token) => {
+			if (err) {
+				res.status(403).json({
+					success: false,
+					error: 'Forbidden Access'
+				});
+			}
+			else {
+				res.status(200).json({
+					success: true,
+					data: user
+				});
+			}
+
+		})
 		res.status(200).json({
 			success: true,
 			data: user

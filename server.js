@@ -1,6 +1,7 @@
 const express = require('express');
 const { connectDB } = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 require('dotenv').config();
 
 // Initialize Express app
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 
 // Home route
 app.get('/', (req, res) => {
