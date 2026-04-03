@@ -7,42 +7,32 @@ const userController = {};
 // Create a user
 userController.createUser = async (req, res) => {
 	try {
+		const body = req.body;
+
 		const saltRounds = 10
-
-		const {
-			username,
-			email,
-			password,
-			city,
-			state,
-			country,
-			country_code,
-			phone_number
-		} = req.body;
-
 		const salt = await bcrypt.genSalt(saltRounds)
 		const passwordHash = await bcrypt.hash(password, salt)
 
 		const recordExists = await User.findOne({
 			where: {
 				[Op.or]: [
-					{ username: username },
-					{ email: email },
-					{ phone_number: phone_number }
+					{ username: body.username },
+					{ email: body.email },
+					{ phone_number: body.phone_number }
 				]
 			}
 		})
 
 		if (recordExists === null) {
 			const user = await User.create({
-				username,
-				email,
+				username: body.username,
+				email: body.email,
 				password: passwordHash,
-				city,
-				state,
-				country,
-				country_code,
-				phone_number
+				city: body.city,
+				state: body.state,
+				country: body.country,
+				country_code: body.country_code,
+				phone_number: body.phone_number
 			});
 
 			res.status(201).json({ success: true, data: user });
@@ -102,22 +92,18 @@ userController.updateUser = async (req, res) => {
 				data: 'User not found!'
 			});
 		}
+		const body = req.body;
 
-		const {
-			username,
-			email,
-			city,
-			state,
-			country,
-			country_code,
-			phone_number
-		} = req.body;
+		const saltRounds = 10
+		const salt = await bcrypt.genSalt(saltRounds)
+		const passwordHash = await bcrypt.hash(body.password, salt)
 
 		await user.update({
-			username: username || user.name,
-			city: city || user.city,
-			state: state || user.state,
-			country: country || user.country,
+			username: body.username || user.name,
+			password: passwordHash || user.name,
+			city: body.city || user.city,
+			state: body.state || user.state,
+			country: body.country || user.country,
 		})
 
 		res.status(200).json({
