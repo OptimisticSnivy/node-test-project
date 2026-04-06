@@ -14,7 +14,9 @@ authController.login = async (req, res) => {
 		} else {
 			const passwordCheck = await bcrypt.compare(body.password, user.password)
 			if (passwordCheck !== null) {
-				jwt.sign({ user }, 'privateKey', (err, token) => {
+				const username = user.username
+
+				jwt.sign({ username }, 'privateKey', (err, token) => {
 					if (err) {
 						console.log(err)
 					}

@@ -1,15 +1,14 @@
-const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
-const User = require('../models/User')
+const User = require('../models/User');
 
-const genHashedPass = async (password, saltRounds) => {
+const userController = {};
+
+async function genHashedPass(password, saltRounds) {
 	const salt = await bcrypt.genSalt(saltRounds)
 	const passwordHash = await bcrypt.hash(password, salt)
 	return passwordHash
 }
-
-const userController = {};
 
 userController.createUser = async (req, res) => {
 	try {
@@ -53,20 +52,11 @@ userController.getAllUsers = async (req, res) => {
 	try {
 		const users = await User.findAll();
 
-		jwt.verify(req.token, 'privateKey', (err, users) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					error: err
-				});
-			} else {
-				res.status(200).json({
-					success: true,
-					count: users.length,
-					data: users
-				});
-			}
-		})
+		res.status(200).json({
+			success: true,
+			count: users.length,
+			data: users
+		});
 	}
 	catch (error) {
 		res.status(500).json({
@@ -87,20 +77,10 @@ userController.getUserById = async (req, res) => {
 			});
 		}
 
-		jwt.verify(req.token, 'privateKey', (err, user) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					error: err
-				});
-			}
-			else {
-				res.status(200).json({
-					success: true,
-					data: user
-				});
-			}
-		})
+		res.status(200).json({
+			success: true,
+			data: user
+		});
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -121,23 +101,20 @@ userController.getUserProfile = async (req, res) => {
 		}
 
 		const userProfile = {
-			username: user.username,
-			phone_number: user.username,
+			username: body.username,
+			email: body.email,
+			city: body.city,
+			state: body.state,
+			country: body.country,
+			country_code: body.country_code,
+			phone_number: body.phone_number
 		}
 
-		jwt.verify(req.token, 'privateKey', (err, token) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					error: err
-				});
-			} else {
-				res.status(200).json({
-					success: true,
-					data: user
-				});
-			}
-		})
+		res.status(200).json({
+			success: true,
+			data: userProfile
+		});
+
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -146,13 +123,8 @@ userController.getUserProfile = async (req, res) => {
 	}
 }
 
-
 userController.updateUser = async (req, res) => {
 	try {
-		const body = req.body;
-
-		const passwordHash = await genHashedPass(body.password, 10)
-
 		const user = await User.findByPk(req.params.id);
 		if (!user) {
 			return res.status(404).json({
@@ -160,27 +132,19 @@ userController.updateUser = async (req, res) => {
 				data: 'User not found!'
 			});
 		}
+		const body = req.body;
 
-		const { token, err } = jwt.verify(req.token, 'privateKey')
+		await user.update({
+			username: body.username || user.name,
+			city: body.city || user.city,
+			state: body.state || user.state,
+			country: body.country || user.country,
+		})
 
-		if (err) {
-			res.status(403).json({
-				success: false,
-				error: err
-			});
-		} else {
-			await user.update({
-				username: body.username || user.name,
-				city: body.city || user.city,
-				state: body.state || user.state,
-				country: body.country || user.country,
-			})
-
-			res.status(200).json({
-				success: true,
-				data: user
-			});
-		}
+		res.status(200).json({
+			success: true,
+			data: user
+		});
 
 	} catch (error) {
 		res.status(500).json({

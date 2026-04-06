@@ -10,7 +10,7 @@ router.post('/', userValidator, userController.createUser)
 router.get('/', authValidator.checkToken, userController.getAllUsers)
 router.get('/:id', authValidator.checkToken, userController.getUserById)
 
-router.put('/:id', userController.updateUser)
+router.put('/:id', authValidator.checkToken, userController.updateUser)
 
 router.delete('/:id', userController.deleteUser)
 

@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken")
 const authValidator = {};
 
 authValidator.checkToken = (req, res, next) => {
@@ -6,9 +7,16 @@ authValidator.checkToken = (req, res, next) => {
 	if (headers !== undefined) {
 		const token = headers.split(' ')[1]
 
-		req.token = token
-
-		next();
+		jwt.verify(token, 'privateKey', (err) => {
+			if (err) {
+				res.status(403).json({
+					success: false,
+					error: err
+				});
+			} else {
+				next();
+			}
+		})
 	} else {
 		res.status(403).json({ success: false, error: 'Forbidden access' });
 	}
