@@ -19,8 +19,8 @@ authController.login = async (req, res) => {
 						console.log(err)
 					}
 					res.status(200).json({
-						token: token,
-						success: true
+						success: true,
+						token: token
 					});
 				})
 			} else {

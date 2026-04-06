@@ -80,7 +80,6 @@ userController.getUserById = async (req, res) => {
 	try {
 		const user = await User.findByPk(req.params.id);
 
-		console.log(req.token)
 		if (!user) {
 			return res.status(404).json({
 				success: false,
@@ -130,7 +129,7 @@ userController.getUserProfile = async (req, res) => {
 			if (err) {
 				res.status(403).json({
 					success: false,
-					error: 'Forbidden Access'
+					error: err
 				});
 			} else {
 				res.status(200).json({
@@ -162,18 +161,26 @@ userController.updateUser = async (req, res) => {
 			});
 		}
 
-		await user.update({
-			username: body.username || user.name,
-			password: passwordHash || user.name,
-			city: body.city || user.city,
-			state: body.state || user.state,
-			country: body.country || user.country,
-		})
+		const { token, err } = jwt.verify(req.token, 'privateKey')
 
-		res.status(200).json({
-			success: true,
-			data: user
-		});
+		if (err) {
+			res.status(403).json({
+				success: false,
+				error: err
+			});
+		} else {
+			await user.update({
+				username: body.username || user.name,
+				city: body.city || user.city,
+				state: body.state || user.state,
+				country: body.country || user.country,
+			})
+
+			res.status(200).json({
+				success: true,
+				data: user
+			});
+		}
 
 	} catch (error) {
 		res.status(500).json({
