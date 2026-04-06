@@ -1,6 +1,12 @@
 const { DataTypes } = require('sequelize')
 const { sequelize } = require('../config/database')
 
+const otp = sequelize.define(
+	'otp',
+	{
+
+	}
+)
 const User = sequelize.define(
 	'User',
 	{

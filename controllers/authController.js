@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const mailer = require("../mailer.js")
 const jwt = require("jsonwebtoken")
 const User = require('../models/User')
 
@@ -36,5 +37,26 @@ authController.login = async (req, res) => {
 		});
 	}
 }
+
+authController.forgotPasswordReq = async (req, res) => {
+	const body = req.body;
+
+	const user = await User.findOne({ where: { email: body.email } })
+	if (user === null) {
+		res.status(400).json({ success: false, error: 'Invalid Email-Id' });
+	} else {
+		mailer.otpSender(body.email);
+		res.status(200).json({
+			success: true,
+			message: "Email has been sent to your registered EmailID!"
+		});
+	}
+}
+
+// authController.verifyOtp = async (req, res) => {
+// 	const body = req.body
+// 	if 
+//
+// }
 
 module.exports = authController;
