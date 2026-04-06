@@ -76,6 +76,7 @@ userController.getUserById = async (req, res) => {
 	try {
 		const user = await User.findByPk(req.params.id);
 
+		console.log(req.token)
 		if (!user) {
 			return res.status(404).json({
 				success: false,
@@ -134,8 +135,6 @@ userController.getUserProfile = async (req, res) => {
 				});
 			}
 		})
-
-
 	} catch (error) {
 		res.status(500).json({
 			success: false,

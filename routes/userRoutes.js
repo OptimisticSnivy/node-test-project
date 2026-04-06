@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/', userValidator, userController.createUser)
 
 router.get('/', authValidator.checkToken, userController.getAllUsers)
-router.get('/:id', userController.getUserById)
+router.get('/:id', authValidator.checkToken, userController.getUserById)
 
 router.put('/:id', userController.updateUser)
 
