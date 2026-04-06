@@ -3,15 +3,19 @@ const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 const User = require('../models/User')
 
+const genHashedPass = async (password, saltRounds) => {
+	const salt = await bcrypt.genSalt(saltRounds)
+	const passwordHash = await bcrypt.hash(password, salt)
+	return passwordHash
+}
+
 const userController = {};
 
 userController.createUser = async (req, res) => {
 	try {
 		const body = req.body;
 
-		const saltRounds = 10
-		const salt = await bcrypt.genSalt(saltRounds)
-		const passwordHash = await bcrypt.hash(body.password, salt)
+		const passwordHash = await genHashedPass(body.password, 10)
 
 		const recordExists = await User.findOne({
 			where: {
@@ -143,8 +147,13 @@ userController.getUserProfile = async (req, res) => {
 	}
 }
 
+
 userController.updateUser = async (req, res) => {
 	try {
+		const body = req.body;
+
+		const passwordHash = await genHashedPass(body.password, 10)
+
 		const user = await User.findByPk(req.params.id);
 		if (!user) {
 			return res.status(404).json({
@@ -152,11 +161,6 @@ userController.updateUser = async (req, res) => {
 				data: 'User not found!'
 			});
 		}
-		const body = req.body;
-
-		const saltRounds = 10
-		const salt = await bcrypt.genSalt(saltRounds)
-		const passwordHash = await bcrypt.hash(body.password, salt)
 
 		await user.update({
 			username: body.username || user.name,
