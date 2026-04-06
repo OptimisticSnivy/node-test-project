@@ -1,12 +1,7 @@
 const { DataTypes } = require('sequelize')
 const { sequelize } = require('../config/database')
+const Otp = require('./Otp') // this gets the instance instead of the file (ie, {} gets file)
 
-const otp = sequelize.define(
-	'otp',
-	{
-
-	}
-)
 const User = sequelize.define(
 	'User',
 	{
@@ -58,5 +53,8 @@ const User = sequelize.define(
 		modelName: 'users'
 	}
 )
+
+User.hasMany(Otp, { foreignKey: 'userId' })
+Otp.belongsTo(User, { foreignKey: 'userId' })
 
 module.exports = User;

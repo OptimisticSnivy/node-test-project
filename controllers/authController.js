@@ -1,61 +1,75 @@
 const bcrypt = require('bcrypt')
-const mailer = require("../mailer.js")
+const crypto = require("crypto")
 const jwt = require("jsonwebtoken")
+const Otp = require('../models/Otp')
 const User = require('../models/User')
+const mailer = require("../mailer.js")
 
-const authController = {};
+const authController = {
 
-authController.login = async (req, res) => {
-	try {
-		const body = req.body;
+	login: async (req, res) => {
+		try {
+			const body = req.body;
 
-		const user = await User.findOne({ where: { username: body.username } })
-		if (user === null) {
-			res.status(400).json({ success: false, error: 'Username is incorrect!' });
-		} else {
-			const passwordCheck = await bcrypt.compare(body.password, user.password)
-			if (passwordCheck !== null) {
-				const username = user.username
-
-				jwt.sign({ username }, 'privateKey', (err, token) => {
-					if (err) {
-						console.log(err)
-					}
-					res.status(200).json({
-						success: true,
-						token: token
-					});
-				})
-			} else {
-				res.status(400).json({ success: false, error: 'Password is incorrect!' });
+			const user = await User.findOne({ where: { username: body.username } })
+			if (!user) {
+				return res.status(400).json({ success: false, error: 'Username is incorrect!' });
 			}
+			const passwordCheck = await bcrypt.compare(body.password, user.password)
+			if (!passwordCheck) {
+				return res.status(400).json({ success: false, error: 'Password is incorrect!' });
+			}
+			const username = user.username
+
+			jwt.sign({ username }, 'privateKey', { expiresIn: 60 * 60 }, (err, token) => {
+				if (err) {
+					console.log(err)
+				}
+				res.status(200).json({
+					success: true,
+					token: token
+				});
+			})
+		} catch (error) {
+			res.status(500).json({
+				success: false,
+				error: error.message
+			});
 		}
-	} catch (error) {
-		res.status(500).json({
-			success: false,
-			error: error.message
-		});
+	},
+
+	forgotPasswordReq: async (req, res) => {
+		try {
+			const body = req.body;
+
+			const user = await User.findOne({ where: { email: body.email } })
+			if (!user) {
+				return res.status(400).json({ success: false, error: 'Invalid Email-Id' });
+			}
+
+			const code = crypto.randomInt(100000, 999999)
+
+			await mailer.otpSender(body.email, code);
+
+			const otp = await Otp.create({
+				code: code,
+				expiresAt: new Date(Date.now() + 60 * 10 * 1000), // date.now() returns milliseconds!
+				isVerified: false,
+				userId: user.userId
+			});
+
+			res.status(200).json({
+				success: true,
+				message: "Email has been sent to your registered EmailID!"
+			});
+		} catch (error) {
+			res.status(500).json({ success: false, error: error });
+		}
 	}
 }
 
-authController.forgotPasswordReq = async (req, res) => {
-	const body = req.body;
-
-	const user = await User.findOne({ where: { email: body.email } })
-	if (user === null) {
-		res.status(400).json({ success: false, error: 'Invalid Email-Id' });
-	} else {
-		mailer.otpSender(body.email);
-		res.status(200).json({
-			success: true,
-			message: "Email has been sent to your registered EmailID!"
-		});
-	}
-}
-
-// authController.verifyOtp = async (req, res) => {
+// const verifyOtp = async (req, res) => {
 // 	const body = req.body
-// 	if 
 //
 // }
 

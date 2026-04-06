@@ -1,10 +1,8 @@
-const crypto = require("crypto")
 const nodemailer = require("nodemailer");
 
 const mailer = {};
 
-mailer.otpSender = async (receiver) => {
-	const token = crypto.randomInt(100000, 999999)
+mailer.otpSender = async (receiver, code) => {
 
 	const testAccount = await nodemailer.createTestAccount();
 
@@ -23,7 +21,7 @@ mailer.otpSender = async (receiver) => {
 			from: testAccount.user, // sender address
 			to: receiver, // list of recipients
 			subject: "Forgot Password?", // subject line
-			text: "Here is your OTP to reset password:", // plain text body
+			text: "Here is your OTP to reset password:" + code, // plain text body
 		});
 
 		console.log("Message sent: %s", info.messageId);

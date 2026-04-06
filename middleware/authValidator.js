@@ -9,13 +9,12 @@ authValidator.checkToken = (req, res, next) => {
 
 		jwt.verify(token, 'privateKey', (err) => {
 			if (err) {
-				res.status(403).json({
+				return res.status(403).json({
 					success: false,
 					error: err
 				});
-			} else {
-				next();
 			}
+			next();
 		})
 	} else {
 		res.status(403).json({ success: false, error: 'Forbidden access' });
