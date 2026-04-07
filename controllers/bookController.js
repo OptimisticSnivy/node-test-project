@@ -34,6 +34,25 @@ const bookController = {
 		}
 	},
 
+	getAllBooks: async (req, res) => {
+		try {
+			const books = await Book.findAll({
+				attributes: ['name', 'author', 'qty'],
+			});
+
+			res.status(200).json({
+				success: true,
+				count: books.length,
+				data: books
+			});
+		} catch (error) {
+			res.status(500).json({
+				success: true,
+				error: error.message
+			});
+		}
+	},
+
 	updateBookQty: async (req, res) => {
 		try {
 			const book = await Book.findByPk(req.params.id);
