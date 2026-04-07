@@ -81,9 +81,7 @@ const authController = {
 				order: [['createdAt', 'DESC']]
 			})
 
-
 			if (new Date(Date.now()) < otp.expiresAt && otp.code == body.code && otp.isVerified == false) {
-				console.log('here now?')
 				await otp.update({
 					isVerified: true
 				})

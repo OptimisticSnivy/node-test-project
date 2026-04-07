@@ -36,13 +36,15 @@ const userController = {
 			res.status(400).json({ success: false, error: 'Username/Email-ID/Phone-Number already Exists!' });
 		}
 		catch (error) {
-			res.status(400).json({ success: false, error: error.message });
+			res.status(500).json({ success: false, error: error.message });
 		}
 	},
 
 	getAllUsers: async (req, res) => {
 		try {
-			const users = await User.findAll();
+			const users = await User.findAll({
+				attributes: ['username', 'city', 'state', 'country', 'country_code'],
+			});
 
 			res.status(200).json({
 				success: true,
