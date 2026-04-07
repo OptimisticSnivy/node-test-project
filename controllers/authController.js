@@ -55,7 +55,7 @@ const authController = {
 
 			const otp = await Otp.create({
 				code: code,
-				expiresAt: new Date(Date.now() + 60 * 10 * 1000), // date.now() returns milliseconds!
+				expiresAt: new Date(Date.now() + 60 * 10 * 1000),
 				isVerified: false,
 				userId: user.userId
 			});
