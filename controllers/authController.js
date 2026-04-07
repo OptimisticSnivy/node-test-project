@@ -81,7 +81,9 @@ const authController = {
 				order: [['createdAt', 'DESC']]
 			})
 
-			if (new Date(Date.now()) < otp.expiresAt && otp.code == body.code && isVerified == false) {
+
+			if (new Date(Date.now()) < otp.expiresAt && otp.code == body.code && otp.isVerified == false) {
+				console.log('here now?')
 				await otp.update({
 					isVerified: true
 				})
@@ -99,7 +101,7 @@ const authController = {
 			}
 			res.status(400).json({ success: false, error: 'OTP is incorrect/expired!' });
 		} catch (error) {
-			res.status(500).json({ success: false, error: error });
+			res.status(500).json({ success: false, error: error.message });
 		}
 	}
 }
