@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize')
 const { sequelize } = require('../config/database')
 const Otp = require('./Otp') // this gets the instance instead of the file (ie, {} gets file)
+const Book = require('./Book')
+const Reader = require('./Reader')
 
 const User = sequelize.define(
 	'User',
@@ -25,6 +27,11 @@ const User = sequelize.define(
 		},
 		password: {
 			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		role: {
+			type: DataTypes.ENUM,
+			values: ["author", "reader"],
 			allowNull: false,
 		},
 		city: {
@@ -56,5 +63,11 @@ const User = sequelize.define(
 
 User.hasMany(Otp, { foreignKey: 'userId' })
 Otp.belongsTo(User, { foreignKey: 'userId' })
+
+User.hasMany(Book, { foreignKey: 'userId' })
+Book.belongsTo(User, { foreignKey: 'userId' })
+
+User.hasMany(Reader, { foreignKey: 'userId' })
+Reader.belongsTo(User, { foreignKey: 'userId' })
 
 module.exports = User;

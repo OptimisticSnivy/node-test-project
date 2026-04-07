@@ -23,6 +23,7 @@ const userController = {
 					username: body.username,
 					email: body.email,
 					password: passwordHash,
+					role: body.role,
 					city: body.city,
 					state: body.state,
 					country: body.country,
@@ -86,7 +87,7 @@ const userController = {
 	getUserProfile: async (req, res) => {
 		try {
 			const userProfile = await User.findOne({
-				attributes: ['email', 'city', 'state', 'country', 'country_code'],
+				attributes: ['email', 'role', 'city', 'state', 'country', 'country_code'],
 				where: { userId: req.params.id }
 			})
 

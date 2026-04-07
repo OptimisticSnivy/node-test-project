@@ -5,6 +5,7 @@ const userSchema = Joi.object({
 	username: Joi.string().min(3).max(30).required(),
 	email: Joi.string().email().trim().required(),
 	password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{8,30}$')).required(),
+	role: Joi.string().trim().required(),
 	city: Joi.string().trim().required(),
 	state: Joi.string().trim().required(),
 	country: Joi.string().trim().required(),

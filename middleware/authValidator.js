@@ -1,24 +1,26 @@
 const jwt = require("jsonwebtoken")
-const authValidator = {};
 
-authValidator.checkToken = (req, res, next) => {
-	const headers = req.headers['authorization']
+const authValidator = {
 
-	if (headers !== undefined) {
-		const token = headers.split(' ')[1]
+	checkToken: (req, res, next) => {
+		const headers = req.headers['authorization']
 
-		jwt.verify(token, 'privateKey', (err) => {
-			if (err) {
-				return res.status(403).json({
-					success: false,
-					error: err
-				});
-			}
-			next();
-		})
-	} else {
-		res.status(403).json({ success: false, error: 'Forbidden access' });
+		if (headers !== undefined) {
+			const token = headers.split(' ')[1]
+
+			jwt.verify(token, 'privateKey', (err) => {
+				if (err) {
+					return res.status(403).json({
+						success: false,
+						error: err
+					});
+				}
+				next();
+			})
+		} else {
+			res.status(403).json({ success: false, error: 'Forbidden access' });
+		}
 	}
-}
+};
 
 module.exports = authValidator;
