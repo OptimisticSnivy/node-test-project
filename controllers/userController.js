@@ -19,6 +19,7 @@ const userController = {
 
 			if (!recordExists) {
 				const passwordHash = await genHashedPass(body.password, 10)
+
 				const user = await User.create({
 					username: body.username,
 					email: body.email,
@@ -120,6 +121,7 @@ const userController = {
 					data: 'User not found!'
 				});
 			}
+
 			const body = req.body;
 
 			await user.update({
