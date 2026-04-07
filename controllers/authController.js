@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken")
 const Otp = require('../models/Otp')
 const User = require('../models/User')
 const mailer = require("../mailer.js")
+const genHashedPass = require('../utils')
 
 const authController = {
 
@@ -65,12 +66,42 @@ const authController = {
 		} catch (error) {
 			res.status(500).json({ success: false, error: error });
 		}
+	},
+
+	verifyOtp: async (req, res) => {
+		try {
+			const body = req.body
+
+			const user = await User.findOne({
+				where: { email: body.email }
+			})
+
+			const otp = await Otp.findOne({
+				where: { userId: user.userId },
+				order: [['createdAt', 'DESC']]
+			})
+
+			if (new Date(Date.now()) < otp.expiresAt && otp.code == body.code && isVerified == false) {
+				await otp.update({
+					isVerified: true
+				})
+
+				const passwordHash = await genHashedPass(body.password, 10)
+
+				await user.update({
+					password: passwordHash
+				})
+
+				return res.status(200).json({
+					success: true,
+					message: "Password has been reset!"
+				})
+			}
+			res.status(400).json({ success: false, error: 'OTP is incorrect/expired!' });
+		} catch (error) {
+			res.status(500).json({ success: false, error: error });
+		}
 	}
 }
-
-// const verifyOtp = async (req, res) => {
-// 	const body = req.body
-//
-// }
 
 module.exports = authController;

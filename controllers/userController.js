@@ -1,12 +1,7 @@
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 const User = require('../models/User');
-
-async function genHashedPass(password, saltRounds) {
-	const salt = await bcrypt.genSalt(saltRounds)
-	const passwordHash = await bcrypt.hash(password, salt)
-	return passwordHash
-}
+const genHashedPass = require('../utils')
 
 const userController = {
 	createUser: async (req, res) => {
