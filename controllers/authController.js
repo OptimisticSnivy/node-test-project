@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const crypto = require("crypto")
+const { Op } = require('sequelize')
 const jwt = require("jsonwebtoken")
 const Otp = require('../models/Otp')
 const User = require('../models/User')
@@ -77,11 +78,16 @@ const authController = {
 			})
 
 			const otp = await Otp.findOne({
-				where: { userId: user.userId },
+				where: {
+					userId: user.userId,
+					expiresAt: { [Op.gt]: new Date() },
+					code: body.code,
+					isVerified: false
+				},
 				order: [['createdAt', 'DESC']]
 			})
 
-			if (new Date(Date.now()) < otp.expiresAt && otp.code == body.code && otp.isVerified == false) {
+			if (otp) {
 				await otp.update({
 					isVerified: true
 				})
