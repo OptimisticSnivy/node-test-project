@@ -14,12 +14,14 @@ const readerController = {
 				}
 			})
 
-			if (!book && !user) {
+			if (!book || !user) {
 				return res.status(404).json({
 					success: false,
 					message: "Book/User not found!"
 				});
 			}
+
+			console.log(book)
 
 			if (book.currReaders >= book.qty) {
 				return res.status(400).json({
