@@ -3,6 +3,7 @@ const { connectDB } = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const bookRoutes = require('./routes/bookRoutes');
+const readerRoutes = require('./routes/readerRoutes');
 require('dotenv').config();
 
 
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/api/readers', readerRoutes);
 
 // Home route
 app.get('/', (req, res) => {

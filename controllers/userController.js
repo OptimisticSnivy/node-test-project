@@ -32,13 +32,21 @@ const userController = {
 					phone_number: body.phone_number
 				});
 
-				return res.status(201).json({ success: true, data: user });
+				return res.status(201).json({
+					success: true,
+					data: user
+				});
 			}
 
-			res.status(400).json({ success: false, error: 'Username/Email-ID/Phone-Number already Exists!' });
-		}
-		catch (error) {
-			res.status(500).json({ success: false, error: error.message });
+			res.status(400).json({
+				success: false,
+				error: 'Username/Email-ID/Phone-Number already Exists!'
+			});
+		} catch (error) {
+			res.status(500).json({
+				success: false,
+				error: error.message
+			});
 		}
 	},
 
@@ -53,8 +61,7 @@ const userController = {
 				count: users.length,
 				data: users
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			res.status(500).json({
 				success: true,
 				error: error.message
@@ -69,7 +76,7 @@ const userController = {
 			if (!user) {
 				return res.status(404).json({
 					success: false,
-					data: 'User not found!'
+					error: 'User not found!'
 				});
 			}
 
@@ -95,7 +102,7 @@ const userController = {
 			if (!userProfile) {
 				return res.status(404).json({
 					success: false,
-					data: 'User not found!'
+					message: 'User not found!'
 				});
 			}
 
@@ -118,7 +125,7 @@ const userController = {
 			if (!user) {
 				return res.status(404).json({
 					success: false,
-					data: 'User not found!'
+					message: 'User not found!'
 				});
 			}
 
@@ -150,7 +157,7 @@ const userController = {
 			if (!user) {
 				return res.status(404).json({
 					success: false,
-					data: 'User not found!'
+					message: 'User not found!'
 				});
 			}
 

@@ -70,4 +70,7 @@ Book.belongsTo(User, { foreignKey: 'userId' })
 User.hasMany(Reader, { foreignKey: 'userId' })
 Reader.belongsTo(User, { foreignKey: 'userId' })
 
+Book.hasMany(Reader, { foreignKey: 'bookId' })
+Reader.belongsTo(Book, { foreignKey: 'bookId' })
+
 module.exports = User;

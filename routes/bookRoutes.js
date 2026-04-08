@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/', authValidator.checkToken, bookController.createBook)
 
 router.get('/', authValidator.checkToken, bookController.getAllBooks)
+router.get('/:id', authValidator.checkToken, bookController.getBookById)
 
 router.put('/:id', authValidator.checkToken, bookController.updateBookQty)
 

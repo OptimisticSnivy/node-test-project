@@ -25,12 +25,21 @@ const bookController = {
 					userId: user.userId
 				});
 
-				return res.status(201).json({ success: true, data: book });
+				return res.status(201).json({
+					success: true,
+					data: book
+				});
 			}
 
-			res.status(400).json({ success: false, error: 'Book already exists!' });
+			res.status(400).json({
+				success: false,
+				message: 'Book already exists!'
+			});
 		} catch (error) {
-			res.status(500).json({ success: false, error: error.message });
+			res.status(500).json({
+				success: false,
+				error: error.message
+			});
 		}
 	},
 
@@ -53,13 +62,36 @@ const bookController = {
 		}
 	},
 
+	getBookById: async (req, res) => {
+		try {
+			const book = await Book.findByPk(req.params.id)
+
+			if (!book) {
+				return res.status(500).json({
+					success: true,
+					message: "Book not found!"
+				});
+			}
+
+			res.status(200).json({
+				success: true,
+				data: book
+			});
+		} catch (error) {
+			res.status(200).json({
+				success: false,
+				erroro: error.message
+			});
+		}
+	},
+
 	updateBookQty: async (req, res) => {
 		try {
 			const book = await Book.findByPk(req.params.id);
 			if (!book) {
 				return res.status(404).json({
 					success: false,
-					data: 'Book not found!'
+					message: 'Book not found!'
 				});
 			}
 

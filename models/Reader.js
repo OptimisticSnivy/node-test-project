@@ -4,7 +4,7 @@ const { sequelize } = require('../config/database')
 const Reader = sequelize.define(
 	'Reader',
 	{
-		id: {
+		recordId: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
 			autoIncrement: true
