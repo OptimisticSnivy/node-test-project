@@ -1,10 +1,11 @@
 const express = require('express')
+const validators = require('../middleware/validators.js')
 const authController = require('../controllers/authController.js')
 
 const router = express.Router();
 
-router.get('/login', authController.login)
-router.post('/forgot-password', authController.forgotPasswordReq) // not made a validator yet! 
-router.post('/verify-otp', authController.verifyOtp) // not made a validator yet! 
+router.get('/login', validators.validate(validators.loginSchema), authController.login)
+router.post('/forgot-password', validators.validate(validators.forgotPassSchema), authController.forgotPasswordReq)
+router.post('/verify-otp', validators.validate(validators.verifyOtpSchema), authController.verifyOtp)
 
 module.exports = router;
