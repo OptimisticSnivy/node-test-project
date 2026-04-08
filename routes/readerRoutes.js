@@ -4,6 +4,6 @@ const readerController = require('../controllers/readerController')
 
 const router = express.Router();
 
-router.post('/borrow/:bookId', readerController.borrowBook)
+router.post('/borrow/:bookId', authValidator.checkToken, readerController.borrowBook)
 
 module.exports = router;

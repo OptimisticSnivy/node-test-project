@@ -22,6 +22,7 @@ const readerController = {
 				});
 			}
 
+			// see if all these checks can be done cleaner?
 			const currReaders = await Reader.findAll({
 				where: { bookId: book.bookId }
 			})
@@ -34,6 +35,20 @@ const readerController = {
 				return res.status(400).json({
 					success: false,
 					message: "Book not available!"
+				});
+			}
+
+			const isUnique = await Reader.findOne({
+				where: {
+					userId: user.userId,
+					bookId: book.bookId
+				}
+			})
+
+			if (isUnique) {
+				return res.status(400).json({
+					success: false,
+					message: "can only fetch 1!"
 				});
 			}
 
@@ -57,6 +72,7 @@ const readerController = {
 			});
 		}
 	}
+
 };
 
 module.exports = readerController;
