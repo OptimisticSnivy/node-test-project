@@ -8,7 +8,6 @@ const mailer = require("../mailer.js")
 const genHashedPass = require('../utils')
 
 const authController = {
-
 	login: async (req, res) => {
 		try {
 			const body = req.body;
@@ -21,9 +20,10 @@ const authController = {
 			if (!passwordCheck) {
 				return res.status(400).json({ success: false, error: 'Password is incorrect!' });
 			}
-			const username = user.username
+			const userId = user.userId
+			const role = user.role
 
-			jwt.sign({ username }, 'privateKey', { expiresIn: 60 * 60 }, (err, token) => {
+			jwt.sign({ userId, role }, 'privateKey', { expiresIn: 60 * 60 }, (err, token) => {
 				if (err) {
 					console.log(err)
 				}

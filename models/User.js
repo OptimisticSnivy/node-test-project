@@ -34,6 +34,10 @@ const User = sequelize.define(
 			values: ["author", "reader"],
 			allowNull: false,
 		},
+		currReads: {
+			type: DataTypes.INTEGER,
+			defaultValue: '0'
+		},
 		city: {
 			type: DataTypes.STRING,
 			allowNull: false,

@@ -18,6 +18,10 @@ const Book = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: false
 		},
+		currReaders: {
+			type: DataTypes.INTEGER,
+			defaultValue: '0'
+		},
 		qty: {
 			type: DataTypes.INTEGER,
 			allowNull: false

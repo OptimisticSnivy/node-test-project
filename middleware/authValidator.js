@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken")
 
 const authValidator = {
-
 	checkToken: (req, res, next) => {
 		const headers = req.headers['authorization']
 
@@ -15,6 +14,7 @@ const authValidator = {
 						error: err
 					});
 				}
+				req.token = token;
 				next();
 			})
 		} else {
