@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt')
 const crypto = require("crypto")
-const { Op } = require('sequelize')
 const jwt = require("jsonwebtoken")
 const Otp = require('../models/Otp')
 const User = require('../models/User')
 const mailer = require("../mailer.js")
+const { Op } = require('sequelize')
 const genHashedPass = require('../utils')
 
 const authController = {
@@ -15,12 +15,18 @@ const authController = {
 			const user = await User.findOne({ where: { username: body.username } })
 
 			if (!user) {
-				return res.status(400).json({ success: false, error: 'Username is incorrect!' });
+				return res.status(400).json({
+					success: false,
+					error: 'Username is incorrect!'
+				});
 			}
 
 			const passwordCheck = await bcrypt.compare(body.password, user.password)
 			if (!passwordCheck) {
-				return res.status(400).json({ success: false, error: 'Password is incorrect!' });
+				return res.status(400).json({
+					success: false,
+					error: 'Password is incorrect!'
+				});
 			}
 
 			const userId = user.userId
@@ -49,7 +55,10 @@ const authController = {
 
 			const user = await User.findOne({ where: { email: body.email } })
 			if (!user) {
-				return res.status(400).json({ success: false, error: 'Invalid Email-Id' });
+				return res.status(400).json({
+					success: false,
+					error: 'Invalid Email-Id'
+				});
 			}
 
 			const code = crypto.randomInt(100000, 999999)
@@ -68,7 +77,10 @@ const authController = {
 				message: "Email has been sent to your registered EmailID!"
 			});
 		} catch (error) {
-			res.status(500).json({ success: false, error: error });
+			res.status(500).json({
+				success: false,
+				error: error
+			});
 		}
 	},
 
@@ -106,9 +118,15 @@ const authController = {
 					message: "Password has been reset!"
 				})
 			}
-			res.status(400).json({ success: false, error: 'OTP is incorrect/expired!' });
+			res.status(400).json({
+				success: false,
+				error: 'OTP is incorrect/expired!'
+			});
 		} catch (error) {
-			res.status(500).json({ success: false, error: error.message });
+			res.status(500).json({
+				success: false,
+				error: error.message
+			});
 		}
 	}
 }

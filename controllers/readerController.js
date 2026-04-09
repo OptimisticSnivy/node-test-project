@@ -5,7 +5,6 @@ const Reader = require('../models/Reader');
 const readerController = {
 	borrowBook: async (req, res) => {
 		try {
-
 			const book = await Book.findByPk(req.params.bookId)
 			const user = await User.findOne({
 				where: {
