@@ -5,15 +5,29 @@ const userController = require('../controllers/userController')
 
 const router = express.Router();
 
-router.post('/', validators.validate(validators.userSchema), userController.createUser)
+router.post('/',
+	validators.validate(validators.userSchema),
+	userController.createUser)
 
-router.get('/', authValidator.checkToken, userController.getAllUsers)
-router.get('/:id', authValidator.checkToken, userController.getUserById)
+router.get('/',
+	authValidator.checkToken,
+	userController.getAllUsers)
 
-router.get('/:id/profile', authValidator.checkToken, userController.getUserProfile)
+router.get('/:id',
+	authValidator.checkToken,
+	userController.getUserById)
 
-router.put('/:id', validators.validate(validators.updateUserSchema), authValidator.checkToken, userController.updateUser)
+router.get('/:id/profile',
+	authValidator.checkToken,
+	userController.getUserProfile)
 
-router.delete('/:id', authValidator.checkToken, userController.deleteUser)
+router.put('/:id',
+	validators.validate(validators.updateUserSchema),
+	authValidator.checkToken,
+	userController.updateUser)
+
+router.delete('/:id',
+	authValidator.checkToken,
+	userController.deleteUser)
 
 module.exports = router;

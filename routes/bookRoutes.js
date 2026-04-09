@@ -6,13 +6,29 @@ const bookController = require('../controllers/bookController')
 
 const router = express.Router();
 
-router.post('/', validators.validate(validators.bookSchema), authValidator.checkToken, roleValidator.checkRole('author'), bookController.createBook)
+router.post('/',
+	validators.validate(validators.bookSchema),
+	authValidator.checkToken,
+	roleValidator.checkRole('author'),
+	bookController.createBook)
 
-router.get('/', authValidator.checkToken, bookController.getAllBooks)
-router.get('/:id', authValidator.checkToken, bookController.getBookById)
+router.get('/',
+	authValidator.checkToken,
+	bookController.getAllBooks)
 
-router.put('/:id', validators.validate(validators.updateQtySchema), authValidator.checkToken, roleValidator.checkRole('author'), bookController.updateBookQty)
+router.get('/:id',
+	authValidator.checkToken,
+	bookController.getBookById)
 
-router.delete('/:id', authValidator.checkToken, roleValidator.checkRole('author'), bookController.deleteBook)
+router.put('/:id',
+	validators.validate(validators.updateQtySchema),
+	authValidator.checkToken,
+	roleValidator.checkRole('author'),
+	bookController.updateBookQty)
+
+router.delete('/:id',
+	authValidator.checkToken,
+	roleValidator.checkRole('author'),
+	bookController.deleteBook)
 
 module.exports = router;
