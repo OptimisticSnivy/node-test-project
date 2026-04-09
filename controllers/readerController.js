@@ -21,8 +21,6 @@ const readerController = {
 				});
 			}
 
-			console.log(book)
-
 			if (book.currReaders >= book.qty) {
 				return res.status(400).json({
 					success: false,
@@ -40,7 +38,8 @@ const readerController = {
 			const isUnique = await Reader.findOne({
 				where: {
 					userId: user.userId,
-					bookId: book.bookId
+					bookId: book.bookId,
+					isReturned: false
 				}
 			})
 

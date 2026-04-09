@@ -49,6 +49,10 @@ const validators = {
 		qty: Joi.number().required()
 	}),
 
+	handleBookSchema: Joi.object({
+		userId: Joi.string().trim().required(),
+	}),
+
 	validate: (schema) => {
 		return (req, res, next) => {
 			const { error } = schema.validate(req.body);
