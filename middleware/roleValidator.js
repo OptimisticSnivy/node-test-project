@@ -3,9 +3,9 @@ const jwt = require("jsonwebtoken")
 const roleValidator = {
 	checkRole: (role) => {
 		return (req, res, next) => {
-			const decoded = jwt.decode(req.token)
+			const user = req.user
 
-			if (role === decoded.role && req.body.userId == decoded.userId) {
+			if (role === user.role) {
 				next();
 			} else {
 				res.status(403).json({

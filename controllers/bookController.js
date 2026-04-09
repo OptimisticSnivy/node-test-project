@@ -12,7 +12,7 @@ const bookController = {
 
 			const user = await User.findOne({
 				where: {
-					userId: body.userId,
+					userId: req.user.userId,
 				}
 			})
 

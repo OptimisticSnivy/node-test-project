@@ -5,12 +5,11 @@ const Reader = require('../models/Reader');
 const readerController = {
 	borrowBook: async (req, res) => {
 		try {
-			const body = req.body
 
 			const book = await Book.findByPk(req.params.bookId)
 			const user = await User.findOne({
 				where: {
-					userId: body.userId,
+					userId: req.user.userId,
 				}
 			})
 
@@ -76,12 +75,10 @@ const readerController = {
 
 	returnBook: async (req, res) => {
 		try {
-			const body = req.body
-
 			const book = await Book.findByPk(req.params.bookId)
 			const user = await User.findOne({
 				where: {
-					userId: body.userId,
+					userId: req.user.userId,
 				}
 			})
 

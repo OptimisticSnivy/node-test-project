@@ -13,13 +13,16 @@ const authController = {
 			const body = req.body;
 
 			const user = await User.findOne({ where: { username: body.username } })
+
 			if (!user) {
 				return res.status(400).json({ success: false, error: 'Username is incorrect!' });
 			}
+
 			const passwordCheck = await bcrypt.compare(body.password, user.password)
 			if (!passwordCheck) {
 				return res.status(400).json({ success: false, error: 'Password is incorrect!' });
 			}
+
 			const userId = user.userId
 			const role = user.role
 

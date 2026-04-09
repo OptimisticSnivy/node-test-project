@@ -14,11 +14,16 @@ const authValidator = {
 						error: err
 					});
 				}
-				req.token = token;
+				const decoded = jwt.decode(token)
+				req.user = decoded
+
 				next();
 			})
 		} else {
-			res.status(403).json({ success: false, error: 'Forbidden access' });
+			res.status(403).json({
+				success: false,
+				error: 'Forbidden access'
+			});
 		}
 	}
 };

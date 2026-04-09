@@ -39,7 +39,6 @@ const validators = {
 	}),
 
 	bookSchema: Joi.object({
-		userId: Joi.string().trim().required(),
 		name: Joi.string().trim().required(),
 		author: Joi.string().trim().required(),
 		qty: Joi.number().required()
@@ -47,10 +46,6 @@ const validators = {
 
 	updateQtySchema: Joi.object({
 		qty: Joi.number().required()
-	}),
-
-	handleBookSchema: Joi.object({
-		userId: Joi.string().trim().required(),
 	}),
 
 	validate: (schema) => {
